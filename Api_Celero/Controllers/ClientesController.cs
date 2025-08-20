@@ -782,6 +782,7 @@ namespace Api_Celero.Controllers
             foreach (var entry in datos.Values)
             {
                 // Usar el campo Objects del primer detalle como comentario si está disponible
+                //He realizado estos cambios 
 string OKFlag = "1";
 var primerDetalle = entry.Detalles?.FirstOrDefault();
                
