@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email de Verificación Actualizado - Celero</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: system-ui, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .demo-info {
+            background-color: #e8f5e8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+        }
+        .preview-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .email-preview {
+            padding: 40px 20px;
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-info">
+        <h2>✉️ Vista Previa: Email de Verificación Actualizado</h2>
+        <p><strong>Cambios implementados según especificaciones:</strong></p>
+        <ul>
+            <li>✅ <strong>Remitente:</strong> Celero &lt;noreply@celero.net&gt;</li>
+            <li>✅ <strong>Asunto:</strong> "Código de Acceso al Portal de Celero es ####" (código incluido)</li>
+            <li>✅ <strong>Header elegante:</strong> Fondo negro con logo blanco (alto contraste)</li>
+            <li>✅ <strong>Línea degradada:</strong> Naranja → Rosa → Morado → Azul (3px altura)</li>
+            <li>✅ <strong>Logo actualizado:</strong> celero.png con filtro blanco</li>
+            <li>✅ <strong>Color del código:</strong> #6433dc (púrpura corporativo)</li>
+            <li>✅ <strong>Diseño limpio y profesional</strong></li>
+            <li>✅ <strong>Expiración:</strong> 2 minutos</li>
+        </ul>
+        <p><strong>Endpoint:</strong> <code>POST /api/verificacion/solicitar-codigo</code></p>
+    </div>
+
+    <div class="preview-container">
+        <div class="email-preview">
+            <!-- Simulación del email exacto que se envía -->
+            <style>
+                .logo {
+                    text-align: center;
+                    margin-bottom: 20px;
+                    background-color: #000000;
+                    padding: 20px;
+                    border-radius: 10px 10px 0 0;
+                    position: relative;
+                }
+
+                .logo::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: linear-gradient(90deg, #ff7b00 0%, #ff6b9d 25%, #a855f7 50%, #8b5cf6 75%, #3b82f6 100%);
+                }
+
+                .logo img {
+                    max-width: 150px;
+                    height: auto;
+                    filter: brightness(0) invert(1);
+                }
+            </style>
+            
+            <div style="max-width: 480px; margin: 0 auto; background-color: #ffffff;">
+                <div class="logo">
+                    <img src="https://selfservice-dev.celero.network/lovable-uploads/celero.png" alt="Celero" />
+                </div>
+                
+                <div style="text-align: center;">
+                    <h1 style="font-size: 24px; font-weight: 500; color: #000000; margin-bottom: 16px;">Código de verificación</h1>
+                    <p style="font-size: 16px; color: #666666; margin-bottom: 40px; line-height: 1.4;">Use este código para acceder a su portal</p>
+                    
+                    <div style="background-color: #fafafa; border: 1px solid #e1e5e9; border-radius: 8px; padding: 32px 20px; margin: 40px 0;">
+                        <div style="font-size: 32px; font-weight: 600; color: #6433dc; letter-spacing: 6px; font-family: 'Courier New', monospace;">6789</div>
+                    </div>
+                    
+                    <p style="font-size: 14px; color: #666666; margin-top: 32px;">Este código expira en 2 minutos</p>
+                </div>
+                
+                <div style="text-align: center; margin-top: 48px; padding-top: 32px; border-top: 1px solid #f0f0f0; font-size: 12px; color: #999999;">
+                    <p>© 2025 Celero</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo-info">
+        <h3>📧 Ejemplo de Email Completo:</h3>
+        <p><strong>De:</strong> Celero &lt;noreply@celero.net&gt;</p>
+        <p><strong>Para:</strong> usuario@ejemplo.com</p>
+        <p><strong>Asunto:</strong> Código de Acceso al Portal de Celero es 6789</p>
+        <p><strong>Cuerpo:</strong> Email HTML con el diseño mostrado arriba</p>
+        
+        <h4>🔧 Configuración Técnica:</h4>
+        <ul>
+            <li><strong>Controlador:</strong> VerificacionController</li>
+            <li><strong>Método:</strong> GenerarEmailVerificacion()</li>
+            <li><strong>Endpoint:</strong> POST /api/verificacion/solicitar-codigo</li>
+            <li><strong>Logo URL:</strong> https://selfservice-dev.celero.network/lovable-uploads/celero.png</li>
+            <li><strong>Header:</strong> Fondo negro (#000000) con logo blanco</li>
+            <li><strong>Gradiente:</strong> Línea colorida horizontal en parte inferior</li>
+            <li><strong>Color código:</strong> #6433dc</li>
+            <li><strong>Tipografía:</strong> -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Email Templates Preview - Celero</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5; }
+        .preview-container { margin-bottom: 50px; border: 2px solid #ddd; background-color: white; }
+        h1 { color: #333; text-align: center; }
+        h2 { background-color: #333; color: white; padding: 10px; margin: 0; }
+        .email-frame { padding: 20px; background-color: #e9ecef; }
+        iframe { width: 100%; height: 800px; border: 1px solid #ccc; background-color: white; }
+    </style>
+</head>
+<body>
+    <h1>Celero Email Templates Preview</h1>
+    <p style="text-align: center; color: #666;">Plantillas actualizadas con el diseño original + WhatsApp link + logos dinámicos</p>
+    
+    <!-- Payment Confirmation - Celero Networks -->
+    <div class="preview-container">
+        <h2>Payment Confirmation - Celero Networks</h2>
+        <div class="email-frame">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <div style="background-color: #007bff; color: white; padding: 20px; text-align: center;">
+                    <img src="https://selfservice-dev.celero.network/lovable-uploads/Logo_Celero_Networks.svg" alt="Logo" style="max-width: 200px; height: auto; margin-bottom: 20px;">
+                    <h1>Confirmación de Pago</h1>
+                </div>
+                <div style="padding: 20px; background-color: #f9f9f9;">
+                    <h2>Estimado/a Juan Pérez,</h2>
+                    <p>Su pago ha sido procesado exitosamente.</p>
+                    
+                    <h3>Detalles del Pago:</h3>
+                    <ul>
+                        <li><strong>Factura:</strong> #INV-2025-001</li>
+                        <li><strong>Monto:</strong> <span style="font-size: 24px; font-weight: bold; color: #28a745;">$150.00</span></li>
+                        <li><strong>Método de Pago:</strong> Tarjeta de Crédito</li>
+                        <li><strong>ID de Transacción:</strong> TXN-123456789</li>
+                        <li><strong>Fecha de Pago:</strong> 04/08/2025 14:30</li>
+                    </ul>
+                    
+                    <p>Gracias por su pago. Si tiene alguna pregunta, no dude en contactarnos.</p>
+                    
+                    <a href="https://api.whatsapp.com/send/?phone=50768587775" style="display: inline-block; background-color: #25D366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 20px;">Clic aquí para contactarnos por WhatsApp</a>
+                </div>
+                <div style="text-align: center; padding: 20px; font-size: 12px; color: #666;">
+                    <p>© 2025 Celero. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Confirmation - Celero Quantum -->
+    <div class="preview-container">
+        <h2>Payment Confirmation - Celero Quantum</h2>
+        <div class="email-frame">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <div style="background-color: #007bff; color: white; padding: 20px; text-align: center;">
+                    <img src="https://selfservice-dev.celero.network/lovable-uploads/Logo_Celero_Quantum.svg" alt="Logo" style="max-width: 200px; height: auto; margin-bottom: 20px;">
+                    <h1>Confirmación de Pago</h1>
+                </div>
+                <div style="padding: 20px; background-color: #f9f9f9;">
+                    <h2>Estimado/a María García,</h2>
+                    <p>Su pago ha sido procesado exitosamente.</p>
+                    
+                    <h3>Detalles del Pago:</h3>
+                    <ul>
+                        <li><strong>Factura:</strong> #INV-2025-002</li>
+                        <li><strong>Monto:</strong> <span style="font-size: 24px; font-weight: bold; color: #28a745;">$250.00</span></li>
+                        <li><strong>Método de Pago:</strong> ACH</li>
+                        <li><strong>ID de Transacción:</strong> ACH-987654321</li>
+                        <li><strong>Fecha de Pago:</strong> 04/08/2025 15:45</li>
+                    </ul>
+                    
+                    <p>Gracias por su pago. Si tiene alguna pregunta, no dude en contactarnos.</p>
+                    
+                    <a href="https://api.whatsapp.com/send/?phone=50768587775" style="display: inline-block; background-color: #25D366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 20px;">Clic aquí para contactarnos por WhatsApp</a>
+                </div>
+                <div style="text-align: center; padding: 20px; font-size: 12px; color: #666;">
+                    <p>© 2025 Celero. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Reminder - Celero Networks -->
+    <div class="preview-container">
+        <h2>Invoice Reminder - Celero Networks (Overdue)</h2>
+        <div class="email-frame">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <div style="background-color: #dc3545; color: white; padding: 20px; text-align: center;">
+                    <img src="https://selfservice-dev.celero.network/lovable-uploads/Logo_Celero_Networks.svg" alt="Logo" style="max-width: 200px; height: auto; margin-bottom: 20px;">
+                    <h1>Recordatorio de Pago</h1>
+                </div>
+                <div style="padding: 20px; background-color: #f9f9f9;">
+                    <h2>Estimado/a Carlos López,</h2>
+                    <p>Le recordamos que tiene una factura pendiente de pago.</p>
+                    
+                    <h3>Detalles de la Factura:</h3>
+                    <ul>
+                        <li><strong>Factura:</strong> #INV-2025-003</li>
+                        <li><strong>Monto:</strong> <span style="font-size: 24px; font-weight: bold; color: #dc3545;">$350.00</span></li>
+                        <li><strong>Fecha de Vencimiento:</strong> 01/07/2025</li>
+                        <li style="color: #dc3545; font-weight: bold;"><strong>Días de Atraso:</strong> 34 días</li>
+                    </ul>
+                    
+                    <p>Por favor, proceda con el pago a la brevedad posible. Si ya realizó el pago, ignore este mensaje.</p>
+                    
+                    <a href="https://api.whatsapp.com/send/?phone=50768587775" style="display: inline-block; background-color: #25D366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 20px;">Clic aquí para contactarnos por WhatsApp</a>
+                </div>
+                <div style="text-align: center; padding: 20px; font-size: 12px; color: #666;">
+                    <p>© 2025 Celero. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Email - Celero Quantum -->
+    <div class="preview-container">
+        <h2>Welcome Email - Celero Quantum</h2>
+        <div class="email-frame">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <div style="background-color: #28a745; color: white; padding: 20px; text-align: center;">
+                    <img src="https://selfservice-dev.celero.network/lovable-uploads/Logo_Celero_Quantum.svg" alt="Logo" style="max-width: 200px; height: auto; margin-bottom: 20px;">
+                    <h1>¡Bienvenido a Celero!</h1>
+                </div>
+                <div style="padding: 20px; background-color: #f9f9f9;">
+                    <h2>Estimado/a Ana Martínez,</h2>
+                    <p>¡Nos complace darle la bienvenida a Celero!</p>
+                    
+                    <p><strong>Su código de cliente es:</strong> CQ-2025-789</p>
+                    
+                    <p>Ahora puede acceder a nuestros servicios y gestionar sus facturas de manera fácil y segura.</p>
+                    
+                    <p>Si tiene alguna pregunta o necesita asistencia, no dude en contactarnos.</p>
+                    
+                    <a href="https://api.whatsapp.com/send/?phone=50768587775" style="display: inline-block; background-color: #25D366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 20px;">Clic aquí para contactarnos por WhatsApp</a>
+                </div>
+                <div style="text-align: center; padding: 20px; font-size: 12px; color: #666;">
+                    <p>© 2025 Celero. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

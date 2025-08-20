@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test CORS PayPal</title>
+</head>
+<body>
+    <h1>Test CORS PayPal API</h1>
+    <button onclick="testOptions()">Test OPTIONS Request</button>
+    <button onclick="testPost()">Test POST Request</button>
+    <button onclick="testConnection()">Test Connection</button>
+    <div id="result"></div>
+
+    <script>
+        const apiUrl = 'https://api.celero.network';
+        let currentOrderId = null;
+        
+        async function testOptions() {
+            console.log('Testing OPTIONS request...');
+            document.getElementById('result').innerHTML = 'Testing OPTIONS...';
+            
+            try {
+                const response = await fetch(`${apiUrl}/api/clientes/paypal/create-order`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': 'https://selfservice-dev.celero.network',
+                        'Access-Control-Request-Method': 'POST',
+                        'Access-Control-Request-Headers': 'Content-Type'
+                    }
+                });
+                
+                console.log('OPTIONS Response:', response);
+                document.getElementById('result').innerHTML = `
+                    <h3>OPTIONS Response:</h3>
+                    <p>Status: ${response.status}</p>
+                    <p>Headers: ${JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2)}</p>
+                `;
+            } catch (error) {
+                console.error('OPTIONS Error:', error);
+                document.getElementById('result').innerHTML = `
+                    <h3>OPTIONS Error:</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+        
+        async function testPost() {
+            console.log('Testing POST request...');
+            document.getElementById('result').innerHTML = 'Testing POST...';
+            
+            try {
+                const response = await fetch(`${apiUrl}/api/clientes/paypal/create-order`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        clienteCode: 'CU-20037',
+                        numeroFactura: '1034130',
+                        amount: 100.00,
+                        currency: 'USD',
+                        description: 'Test payment',
+                        returnUrl: 'https://example.com/success',
+                        cancelUrl: 'https://example.com/cancel',
+                        emailCliente: 'test@example.com',
+                        nombreCliente: 'Test User'
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('POST Response:', response, data);
+                
+                if (data.success && data.data && data.data.orderId) {
+                    currentOrderId = data.data.orderId;
+                    document.getElementById('result').innerHTML = `
+                        <h3>✅ POST Response (Create Order):</h3>
+                        <p>Status: ${response.status}</p>
+                        <p><strong>Order ID:</strong> ${data.data.orderId}</p>
+                        <p><strong>Status:</strong> ${data.data.status}</p>
+                        <p><strong>Approval URL:</strong> <a href="${data.data.approvalUrl}" target="_blank">${data.data.approvalUrl}</a></p>
+                        <button onclick="testCapture()" style="margin-top:10px; background: green; color: white; padding: 10px;">Test Capture Payment</button>
+                    `;
+                } else {
+                    document.getElementById('result').innerHTML = `
+                        <h3>❌ POST Response:</h3>
+                        <p>Status: ${response.status}</p>
+                        <p>Data: ${JSON.stringify(data, null, 2)}</p>
+                    `;
+                }
+            } catch (error) {
+                console.error('POST Error:', error);
+                document.getElementById('result').innerHTML = `
+                    <h3>POST Error:</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+        
+        async function testCapture() {
+            if (!currentOrderId) {
+                alert('No hay Order ID disponible. Ejecuta "Test POST Request" primero.');
+                return;
+            }
+            
+            console.log('Testing CAPTURE request...');
+            document.getElementById('result').innerHTML = 'Testing CAPTURE...';
+            
+            try {
+                const response = await fetch(`${apiUrl}/api/clientes/paypal/capture-payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        orderId: currentOrderId,
+                        clienteCode: 'CU-20037',
+                        numeroFactura: '1034130'
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('CAPTURE Response:', response, data);
+                document.getElementById('result').innerHTML = `
+                    <h3>CAPTURE Response:</h3>
+                    <p>Status: ${response.status}</p>
+                    <p>Data: ${JSON.stringify(data, null, 2)}</p>
+                `;
+            } catch (error) {
+                console.error('CAPTURE Error:', error);
+                document.getElementById('result').innerHTML = `
+                    <h3>CAPTURE Error:</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+        
+        async function testConnection() {
+            console.log('Testing connection...');
+            document.getElementById('result').innerHTML = 'Testing connection...';
+            
+            try {
+                const response = await fetch(`${apiUrl}/api/clientes/paypal/test-connection`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                console.log('Connection Response:', response, data);
+                document.getElementById('result').innerHTML = `
+                    <h3>Connection Response:</h3>
+                    <p>Status: ${response.status}</p>
+                    <p>Data: ${JSON.stringify(data, null, 2)}</p>
+                `;
+            } catch (error) {
+                console.error('Connection Error:', error);
+                document.getElementById('result').innerHTML = `
+                    <h3>Connection Error:</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba CORS - API Celero</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        .info {
+            color: blue;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prueba de CORS - API Celero</h1>
+    
+    <div class="test-section">
+        <h2>Configuración</h2>
+        <label>URL de la API:</label>
+        <input type="text" id="apiUrl" value="https://api.celero.network" style="width: 300px;">
+        <br><br>
+        <label>Origen actual:</label>
+        <span class="info" id="currentOrigin"></span>
+    </div>
+
+    <div class="test-section">
+        <h2>1. Prueba OPTIONS (Preflight)</h2>
+        <button onclick="testOptions()">Probar OPTIONS</button>
+        <div id="optionsResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Prueba GET Simple</h2>
+        <button onclick="testSimpleGet()">Probar GET</button>
+        <div id="getResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Prueba GET con Headers</h2>
+        <button onclick="testGetWithHeaders()">Probar GET con Headers</button>
+        <div id="getHeadersResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Prueba POST</h2>
+        <button onclick="testPost()">Probar POST</button>
+        <div id="postResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Prueba Endpoint Específico</h2>
+        <input type="text" id="customEndpoint" value="/api/clientes/recibos-caja?fechaInicio=2025-01-01&fechaFin=2025-08-06&custCode=CU-20090&companyCode=2" style="width: 100%;">
+        <br><br>
+        <button onclick="testCustomEndpoint()">Probar Endpoint</button>
+        <div id="customResult"></div>
+    </div>
+
+    <script>
+        // Mostrar origen actual
+        document.getElementById('currentOrigin').textContent = window.location.origin;
+
+        function getApiUrl() {
+            return document.getElementById('apiUrl').value;
+        }
+
+        async function testOptions() {
+            const resultDiv = document.getElementById('optionsResult');
+            resultDiv.innerHTML = '<p class="info">Enviando petición OPTIONS...</p>';
+            
+            try {
+                const response = await fetch(getApiUrl() + '/api/clientes', {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Access-Control-Request-Method': 'GET',
+                        'Access-Control-Request-Headers': 'Content-Type'
+                    }
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers'),
+                    'Access-Control-Allow-Credentials': response.headers.get('Access-Control-Allow-Credentials')
+                };
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✓ Petición OPTIONS exitosa</p>
+                    <p>Status: ${response.status}</p>
+                    <p>Headers CORS recibidos:</p>
+                    <pre>${JSON.stringify(corsHeaders, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testSimpleGet() {
+            const resultDiv = document.getElementById('getResult');
+            resultDiv.innerHTML = '<p class="info">Enviando petición GET...</p>';
+            
+            try {
+                const response = await fetch(getApiUrl() + '/health', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                const corsOrigin = response.headers.get('Access-Control-Allow-Origin');
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✓ Petición GET exitosa</p>
+                    <p>Status: ${response.status}</p>
+                    <p>CORS Origin: ${corsOrigin || 'No presente'}</p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testGetWithHeaders() {
+            const resultDiv = document.getElementById('getHeadersResult');
+            resultDiv.innerHTML = '<p class="info">Enviando petición GET con headers...</p>';
+            
+            try {
+                const response = await fetch(getApiUrl() + '/api/clientes', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer test-token'
+                    },
+                    credentials: 'include'
+                });
+                
+                const corsOrigin = response.headers.get('Access-Control-Allow-Origin');
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✓ Petición GET con headers exitosa</p>
+                    <p>Status: ${response.status}</p>
+                    <p>CORS Origin: ${corsOrigin || 'No presente'}</p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testPost() {
+            const resultDiv = document.getElementById('postResult');
+            resultDiv.innerHTML = '<p class="info">Enviando petición POST...</p>';
+            
+            try {
+                const response = await fetch(getApiUrl() + '/api/clientes/test', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ test: 'data' }),
+                    credentials: 'include'
+                });
+                
+                const corsOrigin = response.headers.get('Access-Control-Allow-Origin');
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✓ Petición POST exitosa</p>
+                    <p>Status: ${response.status}</p>
+                    <p>CORS Origin: ${corsOrigin || 'No presente'}</p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testCustomEndpoint() {
+            const resultDiv = document.getElementById('customResult');
+            const endpoint = document.getElementById('customEndpoint').value;
+            resultDiv.innerHTML = '<p class="info">Enviando petición al endpoint personalizado...</p>';
+            
+            try {
+                // Primero intentar OPTIONS
+                const optionsResponse = await fetch(getApiUrl() + endpoint, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Access-Control-Request-Method': 'GET',
+                        'Access-Control-Request-Headers': 'Content-Type'
+                    }
+                });
+                
+                // Luego GET real
+                const response = await fetch(getApiUrl() + endpoint, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                
+                const corsOrigin = response.headers.get('Access-Control-Allow-Origin');
+                const data = await response.text();
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✓ Petición al endpoint exitosa</p>
+                    <p>Status OPTIONS: ${optionsResponse.status}</p>
+                    <p>Status GET: ${response.status}</p>
+                    <p>CORS Origin: ${corsOrigin || 'No presente'}</p>
+                    <p>Respuesta (primeros 200 caracteres):</p>
+                    <pre>${data.substring(0, 200)}...</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p class="error">✗ Error: ${error.message}</p>
+                    <p>Este es el error típico de CORS. Revisa la consola del navegador para más detalles.</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba CORS Api Celero</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .error {
+            color: #ff0000;
+        }
+        .success {
+            color: #00aa00;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prueba de CORS para Api Celero</h1>
+    <div class="container">
+        <h2>Configuración</h2>
+        <div>
+            <label for="apiUrl">URL de la API:</label>
+            <input type="text" id="apiUrl" value="https://api.celero.network" style="width: 300px;">
+        </div>
+        <div style="margin-top: 10px;">
+            <label for="endpoint">Endpoint:</label>
+            <select id="endpoint">
+                <option value="/api/clientes/health">/api/clientes/health</option>
+                <option value="/api/clientes/verificar-config">/api/clientes/verificar-config</option>
+            </select>
+        </div>
+        
+        <h2>Pruebas</h2>
+        <div>
+            <button id="testCors">Probar CORS (GET)</button>
+            <button id="testOptions">Probar CORS (OPTIONS)</button>
+            <button id="clearResults">Limpiar resultados</button>
+        </div>
+        
+        <h2>Resultados</h2>
+        <div id="results">
+            <p>Los resultados de las pruebas aparecerán aquí...</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('testCors').addEventListener('click', async () => {
+            const apiUrl = document.getElementById('apiUrl').value;
+            const endpoint = document.getElementById('endpoint').value;
+            const resultsDiv = document.getElementById('results');
+            
+            resultsDiv.innerHTML = '<p>Realizando prueba GET...</p>';
+            
+            try {
+                const response = await fetch(`${apiUrl}${endpoint}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.text();
+                
+                resultsDiv.innerHTML = `
+                    <p class="success">✅ Prueba GET exitosa!</p>
+                    <p>Status: ${response.status} ${response.statusText}</p>
+                    <h3>Headers recibidos:</h3>
+                    <pre>${formatHeaders(response.headers)}</pre>
+                    <h3>Respuesta:</h3>
+                    <pre>${data}</pre>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <p class="error">❌ Error en prueba GET</p>
+                    <p>Error: ${error.message}</p>
+                    <p>Esto generalmente indica un problema de CORS. Verifica la consola del navegador para más detalles.</p>
+                `;
+                console.error('Error en prueba CORS:', error);
+            }
+        });
+        
+        document.getElementById('testOptions').addEventListener('click', async () => {
+            const apiUrl = document.getElementById('apiUrl').value;
+            const endpoint = document.getElementById('endpoint').value;
+            const resultsDiv = document.getElementById('results');
+            
+            resultsDiv.innerHTML = '<p>Realizando prueba OPTIONS (preflight)...</p>';
+            
+            try {
+                const response = await fetch(`${apiUrl}${endpoint}`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': 'https://selfservice-dev.celero.network',
+                        'Access-Control-Request-Method': 'GET',
+                        'Access-Control-Request-Headers': 'Content-Type'
+                    }
+                });
+                
+                resultsDiv.innerHTML = `
+                    <p class="success">✅ Prueba OPTIONS exitosa!</p>
+                    <p>Status: ${response.status} ${response.statusText}</p>
+                    <h3>Headers recibidos:</h3>
+                    <pre>${formatHeaders(response.headers)}</pre>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <p class="error">❌ Error en prueba OPTIONS</p>
+                    <p>Error: ${error.message}</p>
+                    <p>Esto generalmente indica un problema de CORS. Verifica la consola del navegador para más detalles.</p>
+                `;
+                console.error('Error en prueba CORS OPTIONS:', error);
+            }
+        });
+        
+        document.getElementById('clearResults').addEventListener('click', () => {
+            document.getElementById('results').innerHTML = '<p>Los resultados de las pruebas aparecerán aquí...</p>';
+        });
+        
+        function formatHeaders(headers) {
+            let result = '';
+            headers.forEach((value, key) => {
+                result += `${key}: ${value}\n`;
+            });
+            return result;
+        }
+    </script>
+</body>
+</html>

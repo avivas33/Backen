@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  api-celero:
+    build: .
+    container_name: api-celero
+    restart: unless-stopped
+    ports:
+      - "7262:7262"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:7262
+      # Base de datos SQLite
+      - ConnectionStrings__RecibosOffline=Data Source=/app/data/recibos_offline.db
+      # Google reCAPTCHA
+      - GOOGLE_RECAPTCHA_PROJECT_ID=${GOOGLE_RECAPTCHA_PROJECT_ID}
+      - GOOGLE_RECAPTCHA_API_KEY=${GOOGLE_RECAPTCHA_API_KEY}
+      - GOOGLE_RECAPTCHA_SITE_KEY=${GOOGLE_RECAPTCHA_SITE_KEY}
+      # Resend Email Service
+      - Resend__ApiKey=${RESEND_API_KEY}
+      - Resend__DefaultFromEmail=${RESEND_FROM_EMAIL:-noreply@celero.network}
+      - Resend__DefaultFromName=${RESEND_FROM_NAME:-Celero Network}
+      # Hansa API Configuration
+      - Hansa__BaseUrl=${HANSA_BASE_URL}
+      - Hansa__CompanyCode=${HANSA_COMPANY_CODE}
+      - Hansa__Usuario=${HANSA_USUARIO}
+      - Hansa__Clave=${HANSA_CLAVE}
+      # Payment Providers
+      - Cobalt__ClientId=${COBALT_CLIENT_ID}
+      - Cobalt__ClientSecret=${COBALT_CLIENT_SECRET}
+      - Yappy__MerchantId=${YAPPY_MERCHANT_ID}
+      - PayPal__ClientId=${PAYPAL_CLIENT_ID}
+      - PayPal__ClientSecret=${PAYPAL_CLIENT_SECRET}
+      - PayPal__Mode=${PAYPAL_MODE:-sandbox}
+      # CORS
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-https://selfservice.celero.network,https://selfservice-dev.celero.network}
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./appsettings.Production.json:/app/appsettings.Production.json:ro
+    networks:
+      - api-network
+
+  # Opcional: Nginx como proxy reverso
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - api-celero
+    networks:
+      - api-network
+
+networks:
+  api-network:
+    driver: bridge
+
+volumes:
+  logs:

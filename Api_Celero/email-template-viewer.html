@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Visualizador de Plantillas Email - Celero Network</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+        }
+        
+        .header { 
+            background: rgba(255, 255, 255, 0.95);
+            color: #333; 
+            padding: 30px; 
+            border-radius: 15px; 
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.8em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            color: #666;
+        }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); 
+            gap: 25px; 
+        }
+        
+        .card { 
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px; 
+            padding: 25px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+        
+        .card h3 {
+            margin: 0 0 15px 0;
+            font-size: 1.4em;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .btn { 
+            display: inline-block; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            padding: 12px 20px; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            margin: 5px 5px 5px 0;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-preview {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .btn-preview:hover {
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .category {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .category h4 {
+            margin: 0 0 5px 0;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+        
+        .category small {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .preview-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 800px;
+            height: 80%;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal-iframe {
+            width: 100%;
+            height: calc(100% - 80px);
+            border: none;
+        }
+        
+        .api-info {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .api-info h3 {
+            margin: 0 0 15px 0;
+            color: white;
+        }
+        
+        .api-info .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .api-info .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+        }
+        
+        .loading::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            margin: 20px auto;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: block;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='header'>
+            <h1>🎨 Visualizador de Plantillas Email</h1>
+            <p>Previsualize todas las plantillas de email de Resend antes de enviarlas</p>
+            <p><small>Celero Network - API de Gestión de Pagos <span class="status-indicator"></span></small></p>
+        </div>
+
+        <div class='controls'>
+            <h3>🔧 Controles de Prueba</h3>
+            <p>Haga clic en cualquier botón "Ver Plantilla" para previsualizar el email, o use "Nueva Ventana" para abrir en una pestaña separada.</p>
+        </div>
+
+        <div class='grid'>
+            <!-- PayPal Templates -->
+            <div class='card'>
+                <div class='category'>
+                    <h4>💳 PayPal</h4>
+                    <small>Plantillas para pagos procesados vía PayPal Sandbox</small>
+                </div>
+                <h3>🔔 Notificaciones PayPal</h3>
+                <p>Emails automáticos enviados cuando se procesan pagos a través de PayPal, tanto para administradores como clientes. Incluye detalles de transacción, montos y confirmaciones.</p>
+                <button class='btn btn-preview' onclick='previewTemplate("paypal-admin", "PayPal - Administrador")'>👨‍💼 Ver Plantilla Admin</button>
+                <button class='btn btn-preview' onclick='previewTemplate("paypal-cliente", "PayPal - Cliente")'>👤 Ver Plantilla Cliente</button>
+                <a href='https://api.celero.network/api/clientes/email-templates/paypal-admin' class='btn' target='_blank'>🔗 Nueva Ventana Admin</a>
+                <a href='https://api.celero.network/api/clientes/email-templates/paypal-cliente' class='btn' target='_blank'>🔗 Nueva Ventana Cliente</a>
+            </div>
+
+            <!-- Yappy Templates -->
+            <div class='card'>
+                <div class='category'>
+                    <h4>📱 Yappy</h4>
+                    <small>Plantillas para pagos procesados vía Yappy (Banco General)</small>
+                </div>
+                <h3>💸 Notificaciones Yappy</h3>
+                <p>Emails automáticos enviados cuando se procesan pagos a través de la plataforma Yappy de Banco General. Incluye confirmaciones en tiempo real y detalles de transacción.</p>
+                <button class='btn btn-preview' onclick='previewTemplate("yappy-admin", "Yappy - Administrador")'>👨‍💼 Ver Plantilla Admin</button>
+                <button class='btn btn-preview' onclick='previewTemplate("yappy-cliente", "Yappy - Cliente")'>👤 Ver Plantilla Cliente</button>
+                <a href='https://api.celero.network/api/clientes/email-templates/yappy-admin' class='btn' target='_blank'>🔗 Nueva Ventana Admin</a>
+                <a href='https://api.celero.network/api/clientes/email-templates/yappy-cliente' class='btn' target='_blank'>🔗 Nueva Ventana Cliente</a>
+            </div>
+
+            <!-- Tarjeta de Crédito Templates -->
+            <div class='card'>
+                <div class='category'>
+                    <h4>💳 Tarjeta de Crédito</h4>
+                    <small>Plantillas para pagos con tarjeta vía Cobalt</small>
+                </div>
+                <h3>🏦 Notificaciones Tarjeta</h3>
+                <p>Emails automáticos enviados cuando se procesan pagos con tarjeta de crédito a través de la plataforma Cobalt. Incluye números de autorización y confirmaciones de cargo.</p>
+                <button class='btn btn-preview' onclick='previewTemplate("tarjeta-admin", "Tarjeta - Administrador")'>👨‍💼 Ver Plantilla Admin</button>
+                <button class='btn btn-preview' onclick='previewTemplate("tarjeta-cliente", "Tarjeta - Cliente")'>👤 Ver Plantilla Cliente</button>
+                <a href='https://api.celero.network/api/clientes/email-templates/tarjeta-admin' class='btn' target='_blank'>🔗 Nueva Ventana Admin</a>
+                <a href='https://api.celero.network/api/clientes/email-templates/tarjeta-cliente' class='btn' target='_blank'>🔗 Nueva Ventana Cliente</a>
+            </div>
+
+            <!-- Future Templates -->
+            <div class='card'>
+                <div class='category'>
+                    <h4>📧 Comunicaciones Adicionales</h4>
+                    <small>Plantillas para otros tipos de comunicación</small>
+                </div>
+                <h3>📬 Plantillas Futuras</h3>
+                <p>Plantillas adicionales que se pueden implementar para comunicaciones como bienvenida a nuevos clientes, recordatorios de facturas vencidas, y notificaciones ACH.</p>
+                <button class='btn' onclick='alert("🚧 Plantilla en desarrollo\n\nEsta plantilla se implementará próximamente")' style='opacity: 0.7;'>🎉 Bienvenida (Próximamente)</button>
+                <button class='btn' onclick='alert("🚧 Plantilla en desarrollo\n\nEsta plantilla se implementará próximamente")' style='opacity: 0.7;'>⏰ Recordatorio (Próximamente)</button>
+                <button class='btn' onclick='alert("🚧 Plantilla en desarrollo\n\nEsta plantilla se implementará próximamente")' style='opacity: 0.7;'>🏦 ACH (Próximamente)</button>
+            </div>
+        </div>
+
+        <!-- API Info -->
+        <div class='api-info'>
+            <h3>📋 Información de API</h3>
+            <p>Accede programáticamente a las plantillas a través de nuestra API RESTful</p>
+            <a href='https://api.celero.network/api/clientes/email-templates' class='btn' target='_blank'>📄 Ver JSON de Plantillas</a>
+            <a href='https://api.celero.network/swagger' class='btn' target='_blank'>📚 Documentación API</a>
+        </div>
+    </div>
+
+    <!-- Modal for Template Preview -->
+    <div id='previewModal' class='preview-modal'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h3 id='modalTitle'>Vista Previa de Plantilla</h3>
+                <button class='close-btn' onclick='closeModal()'>&times;</button>
+            </div>
+            <iframe id='modalFrame' class='modal-iframe' src='about:blank'></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Función para previsualizar plantillas en modal
+        function previewTemplate(template, title) {
+            const modal = document.getElementById('previewModal');
+            const frame = document.getElementById('modalFrame');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            modalTitle.textContent = title;
+            frame.innerHTML = '<div class="loading">Cargando plantilla...</div>';
+            
+            modal.style.display = 'block';
+            
+            setTimeout(() => {
+                frame.src = `https://api.celero.network/api/clientes/email-templates/${template}`;
+            }, 100);
+        }
+
+        // Función para cerrar modal
+        function closeModal() {
+            const modal = document.getElementById('previewModal');
+            const frame = document.getElementById('modalFrame');
+            
+            modal.style.display = 'none';
+            frame.src = 'about:blank';
+        }
+
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Cerrar modal haciendo clic fuera
+        document.getElementById('previewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Agregar fecha y hora actual
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('es-ES', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const statusElements = document.querySelectorAll('.header p:last-child small');
+            statusElements.forEach(el => {
+                el.innerHTML = `Celero Network - API de Gestión de Pagos | ${dateStr} <span class="status-indicator"></span>`;
+            });
+        });
+
+        // Verificar estado de la API
+        async function checkApiStatus() {
+            try {
+                const response = await fetch('https://api.celero.network/api/clientes/email-templates');
+                const indicators = document.querySelectorAll('.status-indicator');
+                
+                if (response.ok) {
+                    indicators.forEach(indicator => {
+                        indicator.style.background = '#28a745';
+                        indicator.title = 'API Online';
+                    });
+                } else {
+                    indicators.forEach(indicator => {
+                        indicator.style.background = '#ffc107';
+                        indicator.title = 'API con problemas';
+                    });
+                }
+            } catch (error) {
+                const indicators = document.querySelectorAll('.status-indicator');
+                indicators.forEach(indicator => {
+                    indicator.style.background = '#dc3545';
+                    indicator.title = 'API Offline';
+                });
+            }
+        }
+
+        // Verificar estado cada 30 segundos
+        checkApiStatus();
+        setInterval(checkApiStatus, 30000);
+    </script>
+</body>
+</html>

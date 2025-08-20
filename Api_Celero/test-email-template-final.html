@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Email Template Final</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 40px 20px; text-align: center;">
+            <img src="https://celero.net/img/logo-celero-white.png" alt="Celero" style="height: 40px; margin-bottom: 20px;">
+            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 300;">Código de verificación</h1>
+        </div>
+
+        <div style="padding: 24px; margin-left: -1px;">
+            <p style="color: #333; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                Hola,<br><br>
+                Has solicitado un código de verificación para acceder a tu cuenta en el portal de Celero.
+            </p>
+
+            <div style="background-color: #f8f9fa; padding: 30px; border-radius: 8px; text-align: center; margin: 30px 0;">
+                <p style="color: #666; font-size: 14px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 1px;">Tu código es:</p>
+                <div style="font-size: 32px; font-weight: bold; color: #2a5298; letter-spacing: 3px; font-family: 'Courier New', monospace;">
+                    1234
+                </div>
+            </div>
+
+            <p style="color: #333; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                Este código es válido por 15 minutos. Si no solicitaste este código, puedes ignorar este mensaje de forma segura.
+            </p>
+
+            <hr style="border: none; height: 1px; background-color: #eee; margin: 30px 0;">
+
+            <p style="color: #666; font-size: 14px; line-height: 1.5; text-align: center;">
+                <strong>Celero</strong><br>
+                Soluciones de pago seguras y confiables<br><br>
+                Al usar nuestros servicios, aceptas nuestros <a href='https://celero.net/docs/tyc-portal' target='_blank' style="color: #2a5298; text-decoration: none;">términos y condiciones</a>.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar que el enlace de términos y condiciones esté presente
+            const termLink = document.querySelector('a[href="https://celero.net/docs/tyc-portal"]');
+            if (termLink) {
+                console.log('✅ Enlace de términos y condiciones encontrado correctamente');
+                console.log('URL:', termLink.href);
+                console.log('Target:', termLink.target);
+                console.log('Texto:', termLink.textContent);
+                
+                // Resaltar visualmente que el enlace está presente
+                termLink.style.backgroundColor = '#ffeb3b';
+                termLink.style.padding = '2px 4px';
+                termLink.style.borderRadius = '3px';
+                
+                setTimeout(() => {
+                    termLink.style.backgroundColor = '';
+                    termLink.style.padding = '';
+                    termLink.style.borderRadius = '';
+                }, 3000);
+            } else {
+                console.log('❌ Enlace de términos y condiciones NO encontrado');
+                alert('ERROR: Enlace de términos y condiciones no encontrado en la plantilla');
+            }
+        });
+    </script>
+</body>
+</html>

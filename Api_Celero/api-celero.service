@@ -1,0 +1,21 @@
+[Unit]
+Description=Api Celero - ASP.NET 9 Web API
+After=network.target
+
+[Service]
+Type=simple
+# Path to the published application
+ExecStart=/usr/bin/dotnet /var/www/api-celero/publish/Api_Celero.dll
+Restart=always
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=api-celero
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://0.0.0.0:8080
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+# Load environment variables from file
+EnvironmentFile=/var/www/api-celero/.env
+
+[Install]
+WantedBy=multi-user.target
