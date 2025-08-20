@@ -782,33 +782,32 @@ namespace Api_Celero.Controllers
             foreach (var entry in datos.Values)
             {
                 // Usar el campo Objects del primer detalle como comentario si está disponible
-                string OKFlag = "1";
-                var primerDetalle = entry.Detalles?.FirstOrDefault();
-                if (!string.IsNullOrEmpty(primerDetalle?.Objects))
-                {
-                    Comment = primerDetalle.Objects;
-                }
-                else
-                {
-                    // Fallback al comentario por defecto basado en PayMode
-                    if (entry.PayMode == "YP")
-                    {
-                        Comment = "Pago Yappy: " + entry.SerNr;
-                    }
-                    else if (entry.PayMode == "PP")
-                    {
-                        Comment = "Pago PayPal: " + entry.SerNr;
-                    }
-                     else if (entry.PayMode == "ACH")
-                    {
-                        OKFlag = "0";
-                    }
-                    else
-                    {
-                        Comment = "TARJETA DE CREDITO/DEBITO POR COBALT";
-                    }
-                }
+string OKFlag = "1";
+var primerDetalle = entry.Detalles?.FirstOrDefault();
+               
+// Fallback al comentario por defecto basado en PayMode
+if (entry.PayMode == "YP")
+{
+    Comment = "Pago Yappy: " + entry.SerNr;
+}
+else if (entry.PayMode == "PP")
+{
+    Comment = "Pago PayPal: " + entry.SerNr;
+}
+else if (entry.PayMode == "ACH")
+{
+    OKFlag = "0";
+}
+else if (entry.PayMode == "CC")
+{
+    entry.PayMode = "TC";
+}
 
+else
+{
+    Comment = "TARJETA DE CREDITO/DEBITO POR COBALT";
+}
+                      
                 // Usar fecha actual pero ajustada para evitar problemas de timezone con Hansa
                 DateTime TransDate = DateTime.Now; // Usar fecha de ayer para evitar problemas de futuro
                
@@ -1381,7 +1380,7 @@ namespace Api_Celero.Controllers
                                     PayMode = "CC", // CC para Credit Card
                                     Person = venta.contract_number ?? "CARD_CLIENT",
                                     CUCode = venta.contract_number ?? "CARD_CLIENT",
-                                    RefStr = transactionId,
+                                    RefStr = authNumber,
                                     Detalles = new List<Detalle>()
                                 };
                                 
